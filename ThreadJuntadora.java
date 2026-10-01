@@ -1,3 +1,5 @@
+import java.util.Vector;
+
 public class ThreadJuntadora extends Thread
 {
     private Vector<Byte> pedacoA;
@@ -24,7 +26,7 @@ public class ThreadJuntadora extends Thread
         return this.resultado;
     }
 
-    public Vector<Byte> Merge (Vector<Byte> a, Vector<Byte> b)
+    public static Vector<Byte> Merge (Vector<Byte> a, Vector<Byte> b)
     {
         Vector<Byte> novoVetor = new Vector<Byte>();
         int idxA = 0, idxB = 0;
@@ -55,5 +57,6 @@ public class ThreadJuntadora extends Thread
             novoVetor.add(b.get(idxB));
             idxB++;
         }
+        return novoVetor;
     }
 }
