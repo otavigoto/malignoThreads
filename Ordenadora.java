@@ -2,9 +2,9 @@ import java.util.Vector;
 
 public class Ordenadora extends Thread{
 
-    private Vector<Byte> vetor;
+    private Vector<Integer> vetor;
 
-    public Ordenadora(Vector<Byte> v) throws NullPointerException{
+    public Ordenadora(Vector<Integer> v) throws NullPointerException{
         if (v == null){
             throw new NullPointerException();
         }
@@ -17,13 +17,13 @@ public class Ordenadora extends Thread{
         this.vetor = mergeSort(this.vetor);
     }
 
-    private Vector<Byte> mergeSort(Vector<Byte> v){
+    private Vector<Integer> mergeSort(Vector<Integer> v){
         if(v.size() < 2)
         {
             return v;
         }
-        Vector<Byte> esquerda = new Vector<>();
-        Vector<Byte> direita = new Vector<>();
+        Vector<Integer> esquerda = new Vector<>();
+        Vector<Integer> direita = new Vector<>();
 
         int meio = v.size() / 2;
 
@@ -36,7 +36,7 @@ public class Ordenadora extends Thread{
         return ThreadJuntadora.Merge(esquerda, direita);
     }
 
-    public Vector<Byte> getResultado(){
+    public Vector<Integer> getResultado(){
         return this.vetor;
     }
 }

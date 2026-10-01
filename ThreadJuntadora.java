@@ -2,11 +2,11 @@ import java.util.Vector;
 
 public class ThreadJuntadora extends Thread
 {
-    private Vector<Byte> pedacoA;
-    private Vector<Byte> pedacoB;
-    private Vector<Byte> resultado;
+    private Vector<Integer> pedacoA;
+    private Vector<Integer> pedacoB;
+    private Vector<Integer> resultado;
 
-    public ThreadJuntadora(Vector<Byte> pedacoA, Vector<Byte> pedacoB) throws Exception
+    public ThreadJuntadora(Vector<Integer> pedacoA, Vector<Integer> pedacoB) throws Exception
     {
         if(pedacoA == null){throw new Exception("O pedaço A não pode ser nulo!");}
         if(pedacoB == null){throw new Exception("O pedaço B não pode ser nulo!");}
@@ -21,14 +21,14 @@ public class ThreadJuntadora extends Thread
         this.resultado = Merge(this.pedacoA, this.pedacoB);
     }
 
-    public Vector<Byte> getResultado()
+    public Vector<Integer> getResultado()
     {
         return this.resultado;
     }
 
-    public static Vector<Byte> Merge (Vector<Byte> a, Vector<Byte> b)
+    public static Vector<Integer> Merge (Vector<Integer> a, Vector<Integer> b)
     {
-        Vector<Byte> novoVetor = new Vector<Byte>();
+        Vector<Integer> novoVetor = new Vector<Integer>();
         int idxA = 0, idxB = 0;
 
         while (idxA < a.size() && idxB < b.size())
