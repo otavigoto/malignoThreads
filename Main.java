@@ -68,24 +68,36 @@ public class Main {
                 vetorDivs.add(ordenadoras.get(i).getResultado());
             }
         } catch (Exception e) {
+            System.out.println("Erro ao juntar: " + e.getMessage());
         }
 
         Vector<Integer> vetorFinal = new Vector<>();
+        Vector<ThreadJuntadora> juntadoras = new Vector<>();
+        Vector<Vector<Integer>> vetorResto = new Vector<>();
         int qntJuntadoras = 0;
 
         while (vetorDivs.size() > 1) {
-            qntJuntadoras = (vetorDivs.size() % 2 == 0) ? (vetorDivs.size() / 2) : (vetorDivs.size() / 2 + 1);
 
-            Vector<ThreadJuntadora> juntadoras = new Vector<>();
+            qntJuntadoras = vetorDivs.size() / 2;
+
+            juntadoras.clear();
+
             try {
                 for (int i = 0; i < qntJuntadoras; i++) {
                     juntadoras.add(new ThreadJuntadora(vetorDivs.get(i * 2), vetorDivs.get(i * 2 + 1)));
                     juntadoras.get(i).start();
                 }
             } catch (Exception e) {
+                System.out.println("Erro ao criar thread: " + e.getMessage() + vetorDivs.size());
+            }
+
+            if (vetorDivs.size() % 2 != 0) {
+                vetorResto.add(vetorDivs.get(vetorDivs.size() - 1));
             }
 
             vetorDivs.clear();
+            vetorDivs.addAll(vetorResto);
+            vetorResto.clear();
 
             try {
                 for (int i = 0; i < qntJuntadoras; i++) {
@@ -93,6 +105,7 @@ public class Main {
                     vetorDivs.add(juntadoras.get(i).getResultado());
                 }
             } catch (Exception e) {
+                System.out.println("Erro ao juntar: " + e.getMessage());
             }
         }
         vetorFinal = vetorDivs.get(0);
@@ -105,16 +118,48 @@ public class Main {
 
         long tempoFimNormal = System.currentTimeMillis();
 
-        System.out.println("Tempo do Merge Sort: " + (tempoFim - tempoInicio));
-        // System.out.println("Vetor ordenado:" + vetorFinal);
-
-        System.out.println("Tempo do sort normal:" + (tempoFimNormal - tempoInicioNormal));
-        // System.out.println("Vetor ordenado:" + vetorOrdenadoNormal);
-
-        // todo ordenação normal sem threads
-
         // todo escolha do usuario de ver tempo e comparar com o padrão(sem threads),
         // ver numeros ordenados num limite ou todos
+
+        int respFinal = -1;
+        while (respFinal != 0) {
+            System.out.println("1 - Ver tempo e comparar com o sort bubble");
+            System.out.println("2 - Ver numeros ordenados");
+            System.out.println("0 - Sair");
+            respFinal = sc.nextInt();
+
+            switch (respFinal) {
+                case 1:
+                    System.out.println("Tempo com threads: " + (tempoFim - tempoInicio) + "ms");
+                    System.out.println("Tempo sem threads: " + (tempoFimNormal - tempoInicioNormal) + "ms");
+                    break;
+                case 2:
+                    int idx = -2;
+                    System.out.println(
+                            "Vetor ordenado (escolha de 0 a " + (vetorFinal.size() - 1) + " ou -1 para ver todos):");
+                    idx = sc.nextInt();
+
+                    if (idx < -1 || idx >= vetorFinal.size()) {
+                        System.out.println("Índice inválido!");
+                        break;
+                    }
+
+                    if (idx == -1) {
+                        System.out.println(vetorFinal);
+                    } else {
+                        for (int i = 0; i <= idx; i++) {
+                            System.out.println(vetorFinal.get(i));
+                        }
+                    }
+                    break;
+                case 0:
+                    System.out.println("Saindo...");
+                    break;
+                default:
+                    System.out.println("Opção inválida!");
+                    break;
+            }
+        }
 
     }
 
