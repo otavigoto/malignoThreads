@@ -9,7 +9,10 @@ public class Main {
         System.out.println("Escolha o tamanho do vetor (se igual a 0, sera o tamanho maximo)");
         int tamanho = sc.nextInt();
 
-        // todo tamanho maximo = 0 fazer maximo do sistema
+        if (tamanho == 0) {
+            System.out.println("Calculando o limite máximo de memória...");
+            tamanho = descobrirTamanhoMaximo();
+        }
 
         Vector<Integer> vetorInicial = new Vector<Integer>(tamanho);
         System.out.println("Quer gerar numero aleatorios (1) ou digitar manualmente (2)");
@@ -174,6 +177,38 @@ public class Main {
             }
         }
         return vetor;
+
+
+    }
+
+    public static int descobrirTamanhoMaximo()
+    {
+        int limiteInferior = 0;
+        int limiteSuperior = Integer.MAX_VALUE;
+        int maiorTamanhoSucesso = 0;
+
+        while(limiteInferior <= limiteSuperior)
+        {
+            int tamanhoTentativa = limiteInferior + ((limiteSuperior - limiteInferior) / 2);
+            System.out.println("Tentando tamanho: " + tamanhoTentativa);
+
+            try
+            {
+                byte[] vetor = new byte[tamanhoTentativa];
+                maiorTamanhoSucesso = tamanhoTentativa;
+                limiteInferior = tamanhoTentativa + 1;
+                vetor = null;
+                System.gc();
+            }
+            catch (OutOfMemoryError e)
+            {
+                limiteSuperior = tamanhoTentativa - 1;
+            }
+
+
+        }
+        System.out.printf("Memória estimada: %.2f MB%n", maiorTamanhoSucesso * 1.0 / (1024*1024));
+        return maiorTamanhoSucesso;
     }
 
 }
