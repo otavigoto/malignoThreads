@@ -26,18 +26,21 @@ public class Main {
         } else if (resp == 1) {
             Random rand = new Random();
             for (int i = 0; i < tamanho; i++) {
-                vetorInicial.add(rand.nextInt(100000));
+                vetorInicial.add(rand.nextInt(Integer.MAX_VALUE));
             }
             System.out.println("Numeros adicionados aleatóriamente");
         }
 
         Vector<Integer> vetorCopia = new Vector<Integer>(vetorInicial);
+        // Vector<Integer> vetorCopia2 = new Vector<Integer>(vetorInicial);
+
+        long tempoInicio = System.currentTimeMillis();
 
         int n = Runtime.getRuntime().availableProcessors() - 1;
         if (tamanho < n)
             n = tamanho;
 
-        long tempoInicio = System.currentTimeMillis();
+        System.out.println("Dividindo o vetor em " + n + " partes...");
 
         Vector<Vector<Integer>> vetorDivs = new Vector<>();
         int tamanhoDivs = tamanho / n;
@@ -57,6 +60,8 @@ public class Main {
             inicio += qntEls;
         }
 
+        System.out.println("Criando e iniciando as Ordenadoras...");
+
         Vector<Ordenadora> ordenadoras = new Vector<>();
 
         for (int i = 0; i < vetorDivs.size(); i++) {
@@ -73,6 +78,8 @@ public class Main {
         } catch (Exception e) {
             System.out.println("Erro ao juntar: " + e.getMessage());
         }
+
+        System.out.println("Ordenando os vetores separados com juntadoras...");
 
         Vector<Integer> vetorFinal = new Vector<>();
         Vector<ThreadJuntadora> juntadoras = new Vector<>();
@@ -113,20 +120,37 @@ public class Main {
         }
         vetorFinal = vetorDivs.get(0);
 
+        System.out.println("Ordenação concluída.");
+
         long tempoFim = System.currentTimeMillis();
 
-        long tempoInicioNormal = System.currentTimeMillis();
+        // Descomente se quiser comparar com o bubble sort (descomente os prints do
+        // while no final tambem)
+        // long tempoInicioNormal = System.currentTimeMillis();
+        // Vector<Integer> vetorOrdenadoNormal = sort(vetorCopia2);
+        // long tempoFimNormal = System.currentTimeMillis();
 
-        Vector<Integer> vetorOrdenadoNormal = sort(vetorCopia);
+        long tempoInicioUmaThread = System.currentTimeMillis();
 
-        long tempoFimNormal = System.currentTimeMillis();
+        System.out.println("Ordenação com apenas uma thread...");
 
-        // todo escolha do usuario de ver tempo e comparar com o padrão(sem threads),
-        // ver numeros ordenados num limite ou todos
+        Ordenadora ordenadoraUmaThread = new Ordenadora(vetorCopia);
+        ordenadoraUmaThread.start();
+        try {
+            ordenadoraUmaThread.join();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        Vector<Integer> vetorOrdenadoUmaThread = ordenadoraUmaThread.getResultado();
+
+        System.out.println("Ordenação com apenas uma thread concluída.");
+
+        long tempoFimUmaThread = System.currentTimeMillis();
 
         int respFinal = -1;
         while (respFinal != 0) {
-            System.out.println("1 - Ver tempo e comparar com o sort bubble");
+            System.out.println("1 - Ver tempo e comparar os sorts");
             System.out.println("2 - Ver numeros ordenados");
             System.out.println("0 - Sair");
             respFinal = sc.nextInt();
@@ -134,7 +158,10 @@ public class Main {
             switch (respFinal) {
                 case 1:
                     System.out.println("Tempo com threads: " + (tempoFim - tempoInicio) + "ms");
-                    System.out.println("Tempo sem threads: " + (tempoFimNormal - tempoInicioNormal) + "ms");
+                    // System.out.println("Tempo sem threads (bubble sort): " + (tempoFimNormal -
+                    // tempoInicioNormal) + "ms");
+                    System.out.println(
+                            "Tempo com uma thread (merge sort): " + (tempoFimUmaThread - tempoInicioUmaThread) + "ms");
                     break;
                 case 2:
                     int idx = -2;
@@ -178,36 +205,29 @@ public class Main {
         }
         return vetor;
 
-
     }
 
-    public static int descobrirTamanhoMaximo()
-    {
+    public static int descobrirTamanhoMaximo() {
         int limiteInferior = 0;
         int limiteSuperior = Integer.MAX_VALUE;
         int maiorTamanhoSucesso = 0;
 
-        while(limiteInferior <= limiteSuperior)
-        {
+        while (limiteInferior <= limiteSuperior) {
             int tamanhoTentativa = limiteInferior + ((limiteSuperior - limiteInferior) / 2);
             System.out.println("Tentando tamanho: " + tamanhoTentativa);
 
-            try
-            {
+            try {
                 byte[] vetor = new byte[tamanhoTentativa];
                 maiorTamanhoSucesso = tamanhoTentativa;
                 limiteInferior = tamanhoTentativa + 1;
                 vetor = null;
                 System.gc();
-            }
-            catch (OutOfMemoryError e)
-            {
+            } catch (OutOfMemoryError e) {
                 limiteSuperior = tamanhoTentativa - 1;
             }
 
-
         }
-        System.out.printf("Memória estimada: %.2f MB%n", maiorTamanhoSucesso * 1.0 / (1024*1024));
+        System.out.printf("Memória estimada: %.2f MB%n", maiorTamanhoSucesso * 1.0 / (1024 * 1024));
         return maiorTamanhoSucesso;
     }
 
