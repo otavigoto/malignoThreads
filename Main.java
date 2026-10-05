@@ -6,10 +6,10 @@ public class Main {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        System.out.println("Escolha o tamanho do vetor (se igual a 0, sera o tamanho maximo)");
+        System.out.println("Escolha o tamanho do vetor (se <= 0, será o tamanho máximo)");
         int tamanho = sc.nextInt();
 
-        if (tamanho == 0) {
+        if (tamanho <= 0) {
             System.out.println("Calculando o limite máximo de memória...");
             tamanho = descobrirTamanhoMaximo() / 2; // por causa dos vetores auxiliares
 
@@ -29,7 +29,11 @@ public class Main {
             for (int i = 0; i < tamanho; i++) {
                 vetorInicial[i] = (byte) rand.nextInt(128);
             }
-            System.out.println("Numeros adicionados aleatóriamente");
+            System.out.println("Numeros adicionados aleatoriamente");
+        } else {
+            System.out.println("Resposta inválida! Finalizando...");
+            sc.close();
+            return;
         }
 
         byte[] vetorCopia = vetorInicial.clone();
