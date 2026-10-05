@@ -11,7 +11,8 @@ public class Main {
 
         if (tamanho == 0) {
             System.out.println("Calculando o limite máximo de memória...");
-            tamanho = descobrirTamanhoMaximo();
+            tamanho = descobrirTamanhoMaximo() / 2; // por causa dos vetores auxiliares
+
         }
 
         byte[] vetorInicial = new byte[tamanho];
