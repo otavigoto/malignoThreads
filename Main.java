@@ -14,25 +14,25 @@ public class Main {
             tamanho = descobrirTamanhoMaximo();
         }
 
-        Vector<Integer> vetorInicial = new Vector<Integer>(tamanho);
+        byte[] vetorInicial = new byte[tamanho];
         System.out.println("Quer gerar numero aleatorios (1) ou digitar manualmente (2)");
         int resp = sc.nextInt();
 
         if (resp == 2) {
             for (int i = 0; i < tamanho; i++) {
                 System.out.println("escolha um numero:");
-                vetorInicial.add(sc.nextInt());
+                vetorInicial[i] = sc.nextByte();
             }
         } else if (resp == 1) {
             Random rand = new Random();
             for (int i = 0; i < tamanho; i++) {
-                vetorInicial.add(rand.nextInt(Integer.MAX_VALUE));
+                vetorInicial[i] = (byte) rand.nextInt(128);
             }
             System.out.println("Numeros adicionados aleatóriamente");
         }
 
-        Vector<Integer> vetorCopia = new Vector<Integer>(vetorInicial);
-        // Vector<Integer> vetorCopia2 = new Vector<Integer>(vetorInicial);
+        byte[] vetorCopia = vetorInicial.clone();
+        // byte[] vetorCopia2 = vetorInicial.clone();
 
         long tempoInicio = System.currentTimeMillis();
 
@@ -42,7 +42,7 @@ public class Main {
 
         System.out.println("Dividindo o vetor em " + n + " partes...");
 
-        Vector<Vector<Integer>> vetorDivs = new Vector<>();
+        Vector<byte[]> vetorDivs = new Vector<>();
         int tamanhoDivs = tamanho / n;
         int resto = tamanho % n;
         int inicio = 0;
@@ -51,9 +51,9 @@ public class Main {
             int qntEls = tamanhoDivs + (resto > 0 ? 1 : 0);
             resto--;
 
-            Vector<Integer> divs = new Vector<>();
+            byte[] divs = new byte[qntEls];
             for (int j = 0; j < qntEls; j++) {
-                divs.add(vetorInicial.get(inicio + j));
+                divs[j] = vetorInicial[inicio + j];
             }
 
             vetorDivs.add(divs);
@@ -81,9 +81,9 @@ public class Main {
 
         System.out.println("Ordenando os vetores separados com juntadoras...");
 
-        Vector<Integer> vetorFinal = new Vector<>();
+        byte[] vetorFinal = new byte[0];
         Vector<ThreadJuntadora> juntadoras = new Vector<>();
-        Vector<Vector<Integer>> vetorResto = new Vector<>();
+        Vector<byte[]> vetorResto = new Vector<>();
         int qntJuntadoras = 0;
 
         while (vetorDivs.size() > 1) {
@@ -127,7 +127,7 @@ public class Main {
         // Descomente se quiser comparar com o bubble sort (descomente os prints do
         // while no final tambem)
         // long tempoInicioNormal = System.currentTimeMillis();
-        // Vector<Integer> vetorOrdenadoNormal = sort(vetorCopia2);
+        // byte[] vetorOrdenadoNormal = sort(vetorCopia2);
         // long tempoFimNormal = System.currentTimeMillis();
 
         long tempoInicioUmaThread = System.currentTimeMillis();
@@ -142,7 +142,7 @@ public class Main {
             System.out.println(e);
         }
 
-        Vector<Integer> vetorOrdenadoUmaThread = ordenadoraUmaThread.getResultado();
+        byte[] vetorOrdenadoUmaThread = ordenadoraUmaThread.getResultado();
 
         System.out.println("Ordenação com apenas uma thread concluída.");
 
@@ -166,19 +166,25 @@ public class Main {
                 case 2:
                     int idx = -2;
                     System.out.println(
-                            "Vetor ordenado (escolha de 0 a " + (vetorFinal.size() - 1) + " ou -1 para ver todos):");
+                            "Vetor ordenado (escolha de 0 a " + (vetorFinal.length - 1) + " ou -1 para ver todos):");
                     idx = sc.nextInt();
 
-                    if (idx < -1 || idx >= vetorFinal.size()) {
+                    if (idx < -1 || idx >= vetorFinal.length) {
                         System.out.println("Índice inválido!");
                         break;
                     }
 
                     if (idx == -1) {
-                        System.out.println(vetorFinal);
+                        System.out.print("[");
+                        for (int i = 0; i < vetorFinal.length; i++) {
+                            System.out.print(vetorFinal[i]);
+                            if (i < vetorFinal.length - 1)
+                                System.out.print(", ");
+                        }
+                        System.out.println("]");
                     } else {
                         for (int i = 0; i <= idx; i++) {
-                            System.out.println(vetorFinal.get(i));
+                            System.out.println(vetorFinal[i]);
                         }
                     }
                     break;
@@ -193,13 +199,13 @@ public class Main {
 
     }
 
-    public static Vector<Integer> sort(Vector<Integer> vetor) {
-        for (int i = 0; i < vetor.size(); i++) {
-            for (int j = i + 1; j < vetor.size(); j++) {
-                if (vetor.get(i) > vetor.get(j)) {
-                    int temp = vetor.get(i);
-                    vetor.set(i, vetor.get(j));
-                    vetor.set(j, temp);
+    public static byte[] sort(byte[] vetor) {
+        for (int i = 0; i < vetor.length; i++) {
+            for (int j = i + 1; j < vetor.length; j++) {
+                if (vetor[i] > vetor[j]) {
+                    byte temp = vetor[i];
+                    vetor[i] = vetor[j];
+                    vetor[j] = temp;
                 }
             }
         }

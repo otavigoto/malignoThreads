@@ -1,11 +1,9 @@
-import java.util.Vector;
+public class Ordenadora extends Thread {
 
-public class Ordenadora extends Thread{
+    private byte[] vetor;
 
-    private Vector<Integer> vetor;
-
-    public Ordenadora(Vector<Integer> v) throws NullPointerException{
-        if (v == null){
+    public Ordenadora(byte[] v) throws NullPointerException {
+        if (v == null) {
             throw new NullPointerException();
         }
 
@@ -13,22 +11,24 @@ public class Ordenadora extends Thread{
     }
 
     @Override
-    public void run(){
+    public void run() {
         this.vetor = mergeSort(this.vetor);
     }
 
-    private Vector<Integer> mergeSort(Vector<Integer> v){
-        if(v.size() < 2)
-        {
+    private byte[] mergeSort(byte[] v) {
+        if (v.length < 2) {
             return v;
         }
-        Vector<Integer> esquerda = new Vector<>();
-        Vector<Integer> direita = new Vector<>();
 
-        int meio = v.size() / 2;
+        int meio = v.length / 2;
 
-        for(int i = 0; i < meio; i++) esquerda.add(v.get(i));
-        for(int i = meio; i < v.size(); i++) direita.add(v.get(i));
+        byte[] esquerda = new byte[meio];
+        byte[] direita = new byte[v.length - meio];
+
+        for (int i = 0; i < meio; i++)
+            esquerda[i] = v[i];
+        for (int i = meio; i < v.length; i++)
+            direita[i - meio] = v[i];
 
         esquerda = mergeSort(esquerda);
         direita = mergeSort(direita);
@@ -36,7 +36,7 @@ public class Ordenadora extends Thread{
         return ThreadJuntadora.Merge(esquerda, direita);
     }
 
-    public Vector<Integer> getResultado(){
+    public byte[] getResultado() {
         return this.vetor;
     }
 }
